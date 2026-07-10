@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>불꽃 속의 여유 — CookCam Original Drama Webtoon</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Space+Grotesk:wght@300;400;700&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #120D0A;
+      --panel: #1A1310;
+      --ember: #FF7A29;
+      --ember-dim: rgba(255, 122, 41, 0.08);
+      --ember-mid: rgba(255, 122, 41, 0.45);
+      --white: #F5EFE6;
+      --gray: #4A4038;
+      --gray-light: #9C9086;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Noto Sans KR', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+
+    /* 커스텀 커서 */
+    #cursor {
+      position: fixed;
+      width: 10px; height: 10px;
+      background: var(--ember);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9997;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease;
+      mix-blend-mode: difference;
+    }
+    #cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 1px solid var(--ember-mid);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9996;
+      transform: translate(-50%, -50%);
+      transition: all 0.18s ease;
+    }
+
+    /* 네비게이션 */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 48px;
+      background: rgba(18,13,10,0.95);
+      border-bottom: 1px solid var(--gray);
+      backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--gray-light);
+    }
+    .nav-logo span { color: var(--ember); }
+    .nav-links { display: flex; gap: 4px; align-items: center; }
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      color: var(--gray-light);
+      text-decoration: none;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      border: none;
+      transition: color 0.25s;
+    }
+    .nav-cta:hover { color: var(--ember); }
+    .nav-cta.filled {
+      border: 1px solid var(--gray);
+      color: var(--white);
+    }
+    .nav-cta.filled:hover { border-color: var(--ember); }
+
+    /* 히어로 */
+    #hero {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 48px 80px;
+      overflow: hidden;
+    }
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 30% 100%, rgba(255,122,41,0.16), transparent 55%),
+        linear-gradient(180deg, rgba(18,13,10,0.2), rgba(18,13,10,0.95) 85%);
+      z-index: 0;
+    }
+
+    canvas#flame {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
+    .hero-tag {
+      position: relative; z-index: 1;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--ember);
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .hero-title {
+      position: relative; z-index: 1;
+      font-size: clamp(44px, 7vw, 104px);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      margin-bottom: 36px;
+    }
+    .hero-title em {
+      font-style: normal;
+      color: var(--ember);
+      display: block;
+    }
+
+    .hero-sub {
+      position: relative; z-index: 1;
+      font-size: clamp(15px, 1.5vw, 18px);
+      color: var(--gray-light);
+      font-weight: 300;
+      max-width: 520px;
+      line-height: 1.8;
+      margin-bottom: 48px;
+    }
+
+    .hero-actions { position: relative; z-index: 1; display: flex; gap: 16px; align-items: center; }
+    .btn-primary {
+      padding: 16px 40px;
+      background: var(--ember);
+      color: #17110c;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.03em;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-ghost {
+      padding: 16px 32px;
+      border: 1px solid var(--gray);
+      color: var(--gray-light);
+      font-size: 14px;
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      transition: all 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--white); color: var(--white); }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 28px; right: 48px; z-index: 1;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: var(--gray);
+      text-transform: uppercase;
+      font-family: 'Space Grotesk', sans-serif;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .scroll-hint::before {
+      content: '';
+      display: block; width: 40px; height: 1px;
+      background: var(--gray);
+      animation: scrollLine 2s ease infinite;
+    }
+    @keyframes scrollLine {
+      0%, 100% { transform: scaleX(1); opacity: 0.5; }
+      50% { transform: scaleX(0.4); opacity: 1; }
+    }
+
+    section { padding: 140px 48px; position: relative; }
+    .section-number {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--ember);
+      margin-bottom: 60px;
+    }
+    .divider { width: 100%; height: 1px; background: var(--gray); }
+
+    /* 선언문 */
+    #manifesto { background: var(--black); }
+    .manifesto-text {
+      font-size: clamp(26px, 4vw, 52px);
+      font-weight: 700;
+      line-height: 1.35;
+      letter-spacing: -0.01em;
+      max-width: 920px;
+    }
+    .manifesto-text .accent { color: var(--ember); }
+    .manifesto-note {
+      margin-top: 40px;
+      font-size: 14px;
+      color: var(--gray-light);
+      max-width: 560px;
+      line-height: 1.9;
+    }
+
+    /* 로그라인 */
+    #logline { background: #0e0a08; }
+    .logline-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 64px; gap: 24px; flex-wrap: wrap;
+    }
+    .logline-title {
+      font-size: clamp(30px, 4vw, 48px);
+      font-weight: 900; letter-spacing: -0.02em;
+    }
+    .logline-body {
+      font-size: 15px; color: var(--gray-light); line-height: 1.95;
+      max-width: 620px;
+    }
+    .logline-body strong { color: var(--white); font-weight: 500; }
+    .tape {
+      display: inline-flex; gap: 10px; flex-wrap: wrap;
+      margin-top: 32px;
+    }
+    .tape span {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px; letter-spacing: 0.06em;
+      color: var(--gray-light);
+      border: 1px solid var(--gray);
+      padding: 8px 16px;
+    }
+
+    /* 인물 소개 */
+    #characters { background: #080605; }
+    .characters-title {
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 900; letter-spacing: -0.02em;
+      margin-bottom: 80px;
+    }
+    .char-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--gray);
+    }
+    .char-card {
+      background: #080605;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+      cursor: default;
+    }
+    .char-card:hover { background: #0d0908; }
+    .char-photo-wrap {
+      width: 100%;
+      aspect-ratio: 3 / 2;
+      overflow: hidden;
+      background: #000;
+    }
+    .char-photo-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: 22% 12%;
+      filter: saturate(0.9) contrast(1.02);
+      transition: transform 0.5s ease;
+      display: block;
+    }
+    .char-card:hover .char-photo-wrap img { transform: scale(1.06); }
+    .char-body { padding: 28px 26px 34px; }
+    .char-role {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 10px; letter-spacing: 0.15em;
+      color: var(--ember); text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .char-name {
+      font-size: 24px; font-weight: 700; letter-spacing: -0.01em;
+      margin-bottom: 12px;
+    }
+    .char-name span {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px; color: var(--gray-light);
+      font-weight: 400; letter-spacing: 0.05em;
+      display: block; margin-top: 4px;
+    }
+    .char-desc { font-size: 13px; color: var(--gray-light); line-height: 1.8; }
+
+    /* 웹툰 리더 */
+    #episode { background: #050403; padding: 140px 0 160px; }
+    .episode-head { padding: 0 48px; margin-bottom: 64px; }
+    .episode-eyebrow {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px; letter-spacing: 0.2em; color: var(--ember);
+      text-transform: uppercase; margin-bottom: 24px;
+    }
+    .episode-title {
+      font-size: clamp(30px, 4vw, 48px); font-weight: 900; letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+    .episode-sub { font-size: 14px; color: var(--gray-light); max-width: 560px; line-height: 1.9; }
+
+    /* 모바일 뷰포트 목업 */
+    .phone-frame {
+      max-width: 420px;
+      width: 100%;
+      aspect-ratio: 9 / 19.5;
+      margin: 0 auto;
+      background: linear-gradient(160deg, #2b241d, #0e0b09);
+      border-radius: 52px;
+      padding: 16px;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.04) inset,
+        0 60px 100px rgba(0,0,0,0.55),
+        0 0 80px rgba(255,122,41,0.07);
+      position: relative;
+      display: flex;
+    }
+    .phone-notch {
+      position: absolute;
+      top: 16px; left: 50%; transform: translateX(-50%);
+      width: 132px; height: 28px;
+      background: #0e0b09;
+      border-radius: 0 0 20px 20px;
+      z-index: 5;
+    }
+    .phone-screen {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      border-radius: 38px;
+      overflow: hidden;
+      background: #000;
+      position: relative;
+    }
+    .phone-statusbar {
+      flex-shrink: 0;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 30px 6px;
+      background: #000; color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px; font-weight: 700; letter-spacing: 0.02em;
+    }
+    .phone-titlebar {
+      flex-shrink: 0;
+      text-align: center;
+      background: #000; color: var(--gray-light);
+      font-size: 13px; font-weight: 500;
+      padding: 6px 20px 16px;
+      border-bottom: 1px solid #1c1712;
+    }
+    .phone-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      background: #000;
+    }
+    .phone-scroll::-webkit-scrollbar { display: none; }
+
+    .intro-screen {
+      min-height: 100%;
+      flex-shrink: 0;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 32px;
+      background:
+        radial-gradient(ellipse at 50% 25%, rgba(255,122,41,0.22), transparent 55%),
+        linear-gradient(200deg, #241a12, #0a0705 70%);
+      overflow: hidden;
+    }
+    .intro-embers {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(rgba(255,122,41,0.5) 1px, transparent 1.5px);
+      background-size: 34px 46px;
+      opacity: 0.25;
+    }
+    .intro-eyebrow {
+      position: relative;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px; letter-spacing: 0.22em; color: var(--ember);
+      text-transform: uppercase; margin-bottom: 18px;
+    }
+    .intro-title {
+      position: relative;
+      font-size: 32px; font-weight: 700; letter-spacing: -0.01em;
+      line-height: 1.3;
+      color: var(--white); margin-bottom: 16px;
+    }
+    .intro-sub {
+      position: relative;
+      font-size: 13px; color: var(--gray-light); line-height: 1.8;
+      max-width: 260px; margin-bottom: 40px;
+    }
+    .intro-start {
+      position: relative;
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--ember); color: #17110c;
+      font-size: 14px; font-weight: 700;
+      padding: 14px 30px; border-radius: 999px;
+      border: none; cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+      letter-spacing: -0.01em;
+      transition: opacity 0.2s;
+    }
+    .intro-start:hover { opacity: 0.85; }
+    .intro-byline {
+      position: relative;
+      margin-top: 28px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 10px; letter-spacing: 0.14em; color: var(--gray);
+      text-transform: uppercase;
+    }
+    .phone-home-indicator {
+      flex-shrink: 0;
+      background: #000; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .phone-home-indicator::after {
+      content: ''; width: 120px; height: 4px; border-radius: 3px;
+      background: rgba(255,255,255,0.35);
+    }
+
+    .reader { background: #000; }
+    .reader img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .reader-divider {
+      display: flex; align-items: center; justify-content: center;
+      gap: 16px;
+      padding: 40px 0;
+      color: var(--gray);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px; letter-spacing: 0.2em;
+    }
+    .reader-divider::before, .reader-divider::after {
+      content: ''; width: 60px; height: 1px; background: var(--gray);
+    }
+    .reader-end {
+      padding: 48px 28px 64px;
+      text-align: center;
+      background: #000;
+    }
+    .reader-end-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: var(--white); }
+    .reader-end-body { font-size: 12px; color: var(--gray-light); line-height: 1.8; }
+    .episode-foot { text-align: center; margin-top: 56px; }
+
+    /* 브랜드 오리진 */
+    #brand { background: #0c0908; padding: 140px 48px; }
+    .brand-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .brand-eyebrow {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px; letter-spacing: 0.2em; color: var(--ember);
+      text-transform: uppercase; margin-bottom: 28px;
+    }
+    .brand-title { font-size: clamp(28px, 3.4vw, 44px); font-weight: 900; letter-spacing: -0.02em; margin-bottom: 24px; }
+    .brand-body { font-size: 14px; color: var(--gray-light); line-height: 2; margin-bottom: 32px; }
+    .brand-checks { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+    .brand-checks li {
+      font-size: 14px; color: var(--white);
+      display: flex; align-items: baseline; gap: 12px;
+    }
+    .brand-checks li::before {
+      content: '✓'; color: var(--ember); font-weight: 700; flex-shrink: 0;
+    }
+    .brand-card {
+      border: 1px solid var(--gray);
+      padding: 48px 40px;
+      position: relative;
+    }
+    .brand-card-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 10px; letter-spacing: 0.18em; color: #000;
+      background: var(--ember); padding: 5px 12px; text-transform: uppercase;
+      display: inline-block; margin-bottom: 28px;
+    }
+    .brand-card-name { font-size: 32px; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .brand-card-sub { font-family: 'Space Grotesk', sans-serif; font-size: 13px; color: var(--ember); letter-spacing: 0.08em; margin-bottom: 24px; }
+    .brand-card-desc { font-size: 13px; color: var(--gray-light); line-height: 1.9; }
+
+    /* 여정 */
+    #journey { background: var(--ember); color: #17110c; }
+    .journey-title { font-size: clamp(24px, 3vw, 36px); font-weight: 900; letter-spacing: -0.02em; margin-bottom: 56px; }
+    .journey-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
+    .journey-item { position: relative; padding-left: 0; }
+    .journey-step {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+      margin-bottom: 14px; opacity: 0.65;
+    }
+    .journey-label { font-size: 20px; font-weight: 700; line-height: 1.4; }
+    .journey-arrow {
+      position: absolute; right: -28px; top: 2px;
+      font-size: 20px; opacity: 0.4;
+    }
+    .journey-item:last-child .journey-arrow { display: none; }
+
+    /* 제작진 */
+    #credits { background: var(--black); }
+    .credits-header { margin-bottom: 90px; }
+    .credits-title { font-size: clamp(30px, 4vw, 48px); font-weight: 900; letter-spacing: -0.02em; }
+    .credits-rows { display: flex; flex-direction: column; }
+    .credit-row {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 48px;
+      padding: 36px 0;
+      border-top: 1px solid var(--gray);
+      align-items: baseline;
+    }
+    .credit-row:last-child { border-bottom: 1px solid var(--gray); }
+    .credit-role {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px; letter-spacing: 0.15em; color: var(--ember); text-transform: uppercase;
+    }
+    .credit-names { font-size: 18px; font-weight: 500; letter-spacing: -0.01em; }
+    .credit-names span { color: var(--gray-light); font-weight: 300; font-size: 14px; }
+
+    /* CTA */
+    #cta { background: var(--black); text-align: center; padding: 180px 48px; }
+    .cta-label { font-size: 11px; letter-spacing: 0.2em; color: var(--ember); text-transform: uppercase; margin-bottom: 32px; font-family: 'Space Grotesk', sans-serif; }
+    .cta-title { font-size: clamp(36px, 6vw, 84px); font-weight: 900; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 48px; }
+    .cta-title em { font-style: normal; display: block; color: var(--ember); }
+
+    footer {
+      border-top: 1px solid var(--gray);
+      padding: 40px 48px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; }
+    .footer-logo span { color: var(--ember); }
+    .footer-info { font-size: 12px; color: var(--gray-light); text-align: right; line-height: 1.8; }
+
+    #top-btn {
+      position: fixed; bottom: 36px; right: 36px;
+      width: 48px; height: 48px;
+      background: var(--ember); color: #17110c;
+      font-size: 20px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 200;
+      opacity: 0; transform: translateY(16px);
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+    }
+    #top-btn.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    #top-btn:hover { background: #fff; }
+
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    @media (max-width: 900px) {
+      .char-grid { grid-template-columns: repeat(2, 1fr); }
+      .brand-grid { grid-template-columns: 1fr; }
+      .journey-grid { grid-template-columns: 1fr 1fr; row-gap: 48px; }
+      .journey-arrow { display: none; }
+    }
+    @media (max-width: 768px) {
+      body { cursor: auto; }
+      #cursor, #cursor-ring { display: none; }
+      nav { padding: 18px 20px; }
+      .nav-links a:not(.filled) { display: none; }
+      #hero { padding: 0 24px 64px; }
+      section { padding: 80px 24px; }
+      #episode { padding: 80px 0 100px; }
+      .episode-head { padding: 0 24px; }
+      .phone-frame { max-width: 92vw; border-radius: 36px; padding: 10px; }
+      .phone-notch { width: 104px; height: 22px; border-radius: 0 0 14px 14px; }
+      .phone-screen { border-radius: 26px; }
+      .char-grid { grid-template-columns: 1fr; }
+      .logline-header { flex-direction: column; align-items: flex-start; }
+      .journey-grid { grid-template-columns: 1fr; }
+      .credit-row { grid-template-columns: 1fr; gap: 8px; }
+      footer { flex-direction: column; text-align: center; }
+      .footer-info { text-align: center; }
+      .scroll-hint { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+  <div id="top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</div>
+
+  <nav>
+    <div class="nav-logo">COOKCAM<span>_DRAMA</span></div>
+    <div class="nav-links">
+      <a href="#characters" class="nav-cta">인물</a>
+      <a href="#episode" class="nav-cta">웹툰 보기</a>
+      <a href="#brand" class="nav-cta">원작 이야기</a>
+      <a href="#credits" class="nav-cta filled">제작진</a>
+    </div>
+  </nav>
+
+  <!-- 히어로 -->
+  <section id="hero">
+    <canvas id="flame"></canvas>
+    <div class="hero-tag">CookCam Original Drama · Webtoon Adaptation</div>
+    <h1 class="hero-title">
+      불꽃 속의<br>
+      <em>여유.</em>
+    </h1>
+    <p class="hero-sub">
+      각박한 하루에 지친 사람들이 캠프파이어 앞에 모여 앉는다.<br>
+      타오르는 불씨 속에서, 식어 있던 마음이 다시 데워진다.
+    </p>
+    <div class="hero-actions">
+      <a href="#episode" class="btn-primary">파일럿 보기</a>
+      <a href="#characters" class="btn-ghost">인물 소개</a>
+    </div>
+    <div class="scroll-hint">scroll</div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 선언문 -->
+  <section id="manifesto">
+    <div class="section-number">00 — 기획 의도</div>
+    <p class="manifesto-text reveal">
+      우리는 그을린 고기를 팔지 않습니다.<br>
+      그 앞에 마주 앉은 사람들의 마음을,<br>
+      <span class="accent">이야기로 옮겨 그립니다.</span>
+    </p>
+    <p class="manifesto-note reveal reveal-delay-1">
+      쿡캠 오리지널 힐링 드라마 「불꽃 속의 여유」의 세계관을 그대로 이어받아,
+      AI 작화로 제작한 웹툰입니다. 화면의 색감과 톤을 원작 영상과 통일해
+      작품이 전하려던 메시지와 정서를 그대로 지켰습니다.
+    </p>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 로그라인 -->
+  <section id="logline">
+    <div class="logline-header">
+      <h2 class="logline-title reveal">이야기,<br>불꽃 속의 여유</h2>
+      <div class="logline-body reveal reveal-delay-1">
+        야근과 실적 압박에 지쳐가던 <strong>유진</strong>은 대학 시절 후배 <strong>도현</strong>의 제안으로
+        얼떨결에 캠핑을 떠난다. 도현의 동생 <strong>소라</strong>, 캠핑장을 운영하는 전직 소방관 <strong>기준</strong>과
+        함께한 하룻밤의 캠프파이어 — 대단할 것 없는 대화와 손질 없는 숯불 하나가,
+        서로의 오래된 상처를 조용히 데운다.
+        <span class="tape">
+          <span>#캠핑힐링드라마</span>
+          <span>#쿡캠오리지널</span>
+          <span>#불멍</span>
+          <span>#관계와회복</span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 인물 소개 -->
+  <section id="characters">
+    <h2 class="characters-title reveal">인물 소개</h2>
+    <div class="char-grid">
+      <div class="char-card reveal">
+        <div class="char-photo-wrap"><img src="assets/characters/yujin.jpg" alt="유진"></div>
+        <div class="char-body">
+          <div class="char-role">Lead</div>
+          <div class="char-name">유진<span>YUJIN · 23 · Office Worker</span></div>
+          <p class="char-desc">밝고 다정하지만 요즘 부쩍 지쳐 있다. 도현의 캠핑 제안에 얼떨결에 따라나선다.</p>
+        </div>
+      </div>
+      <div class="char-card reveal reveal-delay-1">
+        <div class="char-photo-wrap"><img src="assets/characters/dohyeon.jpg" alt="도현"></div>
+        <div class="char-body">
+          <div class="char-role">Lead</div>
+          <div class="char-name">도현<span>DOHYEON · 24 · 대학생</span></div>
+          <p class="char-desc">차분하고 든든한 성격. 지쳐 보이는 유진이 걱정되어 캠핑을 제안한다.</p>
+        </div>
+      </div>
+      <div class="char-card reveal reveal-delay-2">
+        <div class="char-photo-wrap"><img src="assets/characters/sora.jpg" alt="소라"></div>
+        <div class="char-body">
+          <div class="char-role">Support</div>
+          <div class="char-name">소라<span>SORA · 23 · 대학생</span></div>
+          <p class="char-desc">도현의 동생. 캠핑장에서 만난 유진이 언니처럼 느껴져 먼저 말을 건넨다.</p>
+        </div>
+      </div>
+      <div class="char-card reveal reveal-delay-3">
+        <div class="char-photo-wrap"><img src="assets/characters/jungi.jpg" alt="기준"></div>
+        <div class="char-body">
+          <div class="char-role">Support</div>
+          <div class="char-name">기준<span>운영자 · 전직 소방관</span></div>
+          <p class="char-desc">한때 두려운 대상이었던 불에서, 캠핑을 통해 치유의 힘을 발견한 사람.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 웹툰 리더 -->
+  <section id="episode">
+    <div class="episode-head">
+      <div class="episode-eyebrow">Pilot</div>
+      <h2 class="episode-title reveal">불꽃 속의 여유</h2>
+      <p class="episode-sub reveal reveal-delay-1">
+        지친 밤, 얼떨결에 떠난 캠핑, 그리고 처음 마주한 숯불 하나.
+        아래로 스크롤해 파일럿 편을 이어서 읽어보세요.
+      </p>
+    </div>
+
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="phone-statusbar">
+          <span>9:41</span>
+          <span>●●●</span>
+        </div>
+        <div class="phone-titlebar">불꽃 속의 여유 · PILOT</div>
+        <div class="phone-scroll">
+          <div class="intro-screen">
+            <div class="intro-embers"></div>
+            <div class="intro-eyebrow">Pilot</div>
+            <div class="intro-title">불꽃 속의 여유</div>
+            <p class="intro-sub">각박한 하루에 지친 사람들이<br>캠프파이어 앞에 모여 앉는 이야기.</p>
+            <button class="intro-start" onclick="this.closest('.phone-scroll').querySelector('.reader').scrollIntoView({behavior:'smooth', block:'start'})">파일럿 보기 ↓</button>
+            <div class="intro-byline">CookCam Original Drama</div>
+          </div>
+          <div class="reader">
+            <img src="assets/comic/001.jpg" alt="불꽃 속의 여유 파일럿 - 1컷" loading="lazy">
+            <img src="assets/comic/002.jpg" alt="불꽃 속의 여유 파일럿 - 2컷" loading="lazy">
+            <img src="assets/comic/003.jpg" alt="불꽃 속의 여유 파일럿 - 3컷" loading="lazy">
+            <img src="assets/comic/004.jpg" alt="불꽃 속의 여유 파일럿 - 4컷" loading="lazy">
+            <img src="assets/comic/005.jpg" alt="불꽃 속의 여유 파일럿 - 5컷" loading="lazy">
+          </div>
+          <div class="reader-end">
+            <div class="reader-end-title">파일럿 편. 끝</div>
+            <p class="reader-end-body">본편 1편 「고기서 고기까지」가<br>곧 이어집니다.</p>
+          </div>
+        </div>
+        <div class="phone-home-indicator"></div>
+      </div>
+    </div>
+
+    <div class="episode-foot">
+      <a href="#brand" class="btn-ghost">이 이야기가 태어난 곳 →</a>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- 브랜드 오리진 -->
+  <section id="brand">
+    <div class="brand-grid">
+      <div>
+        <div class="brand-eyebrow reveal">01 — 원작 이야기</div>
+        <h2 class="brand-title reveal reveal-delay-1">캠핑 요리 문화를<br>혁신하는 브랜드, 쿡캠</h2>
+        <p class="brand-body reveal reveal-delay-2">
+          「불꽃 속의 여유」는 캠핑 요리 브랜드 <strong>쿡캠</strong>이 제작한 오리지널 힐링 드라마입니다.
+          숯 하나 피우는 데 한참을 고생하던 캠핑을, 쿡캠의 올인원 숯 키트가 바꿔놓았듯이 —
+          이 이야기 역시 서투르던 사람의 마음에 조용히 불을 지핍니다.
+        </p>
+        <ul class="brand-checks reveal reveal-delay-3">
+          <li>튀지 않는 숯으로 안전한 설계</li>
+          <li>10분만에 숯불 준비 완료, 초간편 숯불 피우기</li>
+          <li>검게 그을린 고기는 이제 그만, 숯향은 그대로</li>
+          <li>바베큐 파티 이후엔 불멍 키트로 변신</li>
+        </ul>
+      </div>
+      <div class="brand-card reveal reveal-delay-1">
+        <span class="brand-card-label">쿡캠</span>
+        <div class="brand-card-name">올인원 숯 키트</div>
+        <div class="brand-card-sub">COOKCAM · ALL-IN-ONE CHARCOAL KIT</div>
+        <p class="brand-card-desc">
+          초보 캠퍼도 실패 없이 즐기는 올인원 숯 키트.
+          한국의 BBQ 문화를 축제로 선보이는 K-BBQ 페스티벌 「불의 향연」과
+          자연 속 치유를 담은 캠핑 힐링 드라마로, 쿡캠은 캠핑의 순간을 계속 이어갑니다.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 여정 -->
+  <section id="journey">
+    <h2 class="journey-title reveal">컬러의 변화, 마음의 변화</h2>
+    <div class="journey-grid">
+      <div class="journey-item reveal">
+        <div class="journey-step">01</div>
+        <div class="journey-label">야근에 지친 사회인</div>
+        <span class="journey-arrow">→</span>
+      </div>
+      <div class="journey-item reveal reveal-delay-1">
+        <div class="journey-step">02</div>
+        <div class="journey-label">친구와의 캠핑</div>
+        <span class="journey-arrow">→</span>
+      </div>
+      <div class="journey-item reveal reveal-delay-2">
+        <div class="journey-step">03</div>
+        <div class="journey-label">캠핑 이후 밝아진 낮</div>
+        <span class="journey-arrow">→</span>
+      </div>
+      <div class="journey-item reveal reveal-delay-3">
+        <div class="journey-step">04</div>
+        <div class="journey-label">힐링과 깨달음</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 제작진 -->
+  <section id="credits">
+    <div class="credits-header">
+      <div class="section-number">02 — 제작진</div>
+      <h2 class="credits-title reveal">2026 경남 CKL 콘텐츠 창작캠프</h2>
+    </div>
+    <div class="credits-rows">
+      <div class="credit-row reveal">
+        <div class="credit-role">원작 / 제작 요청</div>
+        <div class="credit-names">쿡캠 (주식회사 바르고) <span>— 대표 김선아</span></div>
+      </div>
+      <div class="credit-row reveal reveal-delay-1">
+        <div class="credit-role">웹툰 제작팀 RISE</div>
+        <div class="credit-names">팀장 김관우 <span>· 팀원 여민혁, 조현덕, 최지훈</span></div>
+      </div>
+      <div class="credit-row reveal reveal-delay-2">
+        <div class="credit-role">소속</div>
+        <div class="credit-names">창원문성대학교 웹툰그래픽과 <span>· RISE</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="cta">
+    <div class="cta-label">Cookcam × Bargo</div>
+    <h2 class="cta-title reveal">
+      오늘 밤,
+      <em>불 앞에 앉아보세요.</em>
+    </h2>
+    <a href="#episode" class="btn-primary" style="font-size:16px; padding:20px 56px;">파일럿 다시 보기 →</a>
+  </section>
+
+  <footer>
+    <div class="footer-logo">COOKCAM<span>_DRAMA</span></div>
+    <div class="footer-info">
+      쿡캠 오리지널 드라마 「불꽃 속의 여유」 웹툰 각색<br>
+      2026 경남 CKL 콘텐츠 창작캠프 · 창원문성대학교 웹툰그래픽과 RISE
+    </div>
+  </footer>
+
+  <script>
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx + 'px';
+      cursor.style.top = my + 'px';
+    });
+
+    (function animRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top = ry + 'px';
+      requestAnimationFrame(animRing);
+    })();
+
+    document.querySelectorAll('a, button, #top-btn').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'translate(-50%,-50%) scale(2.5)';
+        ring.style.transform = 'translate(-50%,-50%) scale(1.6)';
+        ring.style.borderColor = 'rgba(255,122,41,0.85)';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+        ring.style.transform = 'translate(-50%,-50%) scale(1)';
+        ring.style.borderColor = 'rgba(255,122,41,0.45)';
+      });
+    });
+
+    // 불씨 flicker 캔버스
+    const canvas = document.getElementById('flame');
+    const ctx = canvas.getContext('2d');
+    let W, H;
+    function resizeCanvas() {
+      W = canvas.width = canvas.offsetWidth;
+      H = canvas.height = canvas.offsetHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const embers = Array.from({length: 60}, () => ({
+      x: Math.random(),
+      y: 1 + Math.random() * 0.3,
+      speed: 0.0006 + Math.random() * 0.0012,
+      drift: (Math.random() - 0.5) * 0.0006,
+      size: 1 + Math.random() * 2.2,
+      phase: Math.random() * Math.PI * 2,
+    }));
+
+    function drawEmbers() {
+      ctx.clearRect(0, 0, W, H);
+      embers.forEach(e => {
+        e.y -= e.speed;
+        e.x += e.drift;
+        if (e.y < -0.05) { e.y = 1 + Math.random() * 0.1; e.x = Math.random(); }
+        const flick = 0.5 + 0.5 * Math.sin(e.phase + e.y * 20);
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(255, ${120 + Math.floor(flick*60)}, 40, ${0.25 + flick * 0.5})`;
+        ctx.arc(e.x * W, e.y * H, e.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      requestAnimationFrame(drawEmbers);
+    }
+    drawEmbers();
+
+    const topBtn = document.getElementById('top-btn');
+    window.addEventListener('scroll', () => {
+      topBtn.classList.toggle('visible', window.scrollY > 400);
+    });
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
