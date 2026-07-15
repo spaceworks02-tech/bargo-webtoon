@@ -311,6 +311,49 @@
     }
     .char-desc { font-size: 13px; color: var(--gray-light); line-height: 1.8; }
 
+    /* 1화 인물 소개 (캐릭터 시트) */
+    #ep1-characters { background: #0a0705; padding: 140px 0; }
+    .ep1-char-head { padding: 0 48px; margin-bottom: 64px; }
+    .ep1-char-eyebrow {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px; letter-spacing: 0.2em; color: var(--ember);
+      text-transform: uppercase; margin-bottom: 24px;
+    }
+    .ep1-char-title {
+      font-size: clamp(30px, 4vw, 48px); font-weight: 900; letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+    .ep1-char-sub { font-size: 14px; color: var(--gray-light); max-width: 560px; line-height: 1.9; }
+    .ep1-char-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1px;
+      background: var(--gray);
+      margin-top: 64px;
+    }
+    .ep1-char-card {
+      background: #0a0705;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+      cursor: default;
+    }
+    .ep1-char-card:hover { background: #0f0b08; }
+    .ep1-char-photo-wrap {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: #d8d8d8;
+    }
+    .ep1-char-photo-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transition: transform 0.5s ease;
+      display: block;
+    }
+    .ep1-char-card:hover .ep1-char-photo-wrap img { transform: scale(1.04); }
+
     /* 웹툰 리더 */
     #episode { background: #050403; padding: 140px 0 160px; }
     .episode-head { padding: 0 48px; margin-bottom: 64px; }
@@ -590,6 +633,7 @@
     .reveal-delay-1 { transition-delay: 0.1s; }
     .reveal-delay-2 { transition-delay: 0.2s; }
     .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
 
     @media (max-width: 900px) {
       .char-grid { grid-template-columns: repeat(2, 1fr); }
@@ -784,11 +828,58 @@
 
   <div class="divider"></div>
 
+  <!-- 1화 인물 소개 (캐릭터 시트) -->
+  <section id="ep1-characters">
+    <div class="ep1-char-head">
+      <div class="ep1-char-eyebrow">Episode 1 · Cast</div>
+      <h2 class="ep1-char-title reveal">고기서 고기까지 — 인물 소개</h2>
+      <p class="ep1-char-sub reveal reveal-delay-1">
+        1화 「불 피우는 법」을 이끌어가는 네 사람.
+      </p>
+    </div>
+    <div class="ep1-char-grid">
+      <div class="ep1-char-card reveal">
+        <div class="ep1-char-photo-wrap"><img src="assets/characters/ep1/이고기_character_sheet.jpg" alt="이고기"></div>
+        <div class="char-body">
+          <div class="char-role">Lead</div>
+          <div class="char-name">이고기<span>32 · 웹툰 회사 퇴사자</span></div>
+          <p class="char-desc">번아웃으로 회사를 떠나 무작정 캠핑을 떠난다. 고기 굽는 걸 죽도록 싫어하지만 제일 잘 굽는다. 지금은 "잠깐 쉬는 거"라고 우기는 중.</p>
+        </div>
+      </div>
+      <div class="ep1-char-card reveal reveal-delay-1">
+        <div class="ep1-char-photo-wrap"><img src="assets/characters/ep1/엄마_character_sheet.jpg" alt="엄마"></div>
+        <div class="char-body">
+          <div class="char-role">Support</div>
+          <div class="char-name">엄마<span>54 · 고깃집 사장</span></div>
+          <p class="char-desc">이혼 후 혼자 고깃집을 운영하며 이고기를 키워냈다. 온화하지만 단단한 성격 — 할 말은 다 '고기'로 표현한다.</p>
+        </div>
+      </div>
+      <div class="ep1-char-card reveal reveal-delay-2">
+        <div class="ep1-char-photo-wrap"><img src="assets/characters/ep1/이순살_character_sheet.jpg" alt="이순살"></div>
+        <div class="char-body">
+          <div class="char-role">Support</div>
+          <div class="char-name">이순살<span>28 · 동생</span></div>
+          <p class="char-desc">결혼 1년 차, 인생 최고점을 달리는 이고기의 동생. 언니에게 무심코 던진 한마디가 이 모든 이야기의 발단이 된다.</p>
+        </div>
+      </div>
+      <div class="ep1-char-card reveal reveal-delay-3">
+        <div class="ep1-char-photo-wrap"><img src="assets/characters/ep1/제부_character_sheet.jpg" alt="제부"></div>
+        <div class="char-body">
+          <div class="char-role">Support</div>
+          <div class="char-name">제부<span>29 · 이순살의 남편</span></div>
+          <p class="char-desc">눈치 200%. 처가 분위기가 심상치 않음을 감지하고, 그저 말없이 고기만 먹는다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
   <!-- 웹툰 리더 - 본편 1화 -->
   <section id="episode1">
     <div class="episode-head">
       <div class="episode-eyebrow">Episode 1</div>
-      <h2 class="episode-title reveal">고기서 고기까지 — 아니!!!</h2>
+      <h2 class="episode-title reveal">고기서 고기까지</h2>
       <p class="episode-sub reveal reveal-delay-1">
         1화 〈불 피우는 법〉<br>
         웹툰 회사를 그만두고 캠핑을 떠난 "이고기"의 첫날 밤 이야기.
