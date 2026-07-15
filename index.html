@@ -521,6 +521,14 @@
     .reader-end-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: var(--white); }
     .reader-end-body { font-size: 12px; color: var(--gray-light); line-height: 1.8; }
     .episode-foot { text-align: center; margin-top: 56px; }
+    .episode-credit {
+      text-align: center;
+      margin-top: 28px;
+      font-size: 12px;
+      color: var(--gray-light);
+      line-height: 2;
+    }
+    .episode-credit strong { color: var(--white); font-weight: 500; }
 
     /* 브랜드 오리진 */
     #brand { background: #0c0908; padding: 140px 48px; }
@@ -576,34 +584,6 @@
       font-size: 20px; opacity: 0.4;
     }
     .journey-item:last-child .journey-arrow { display: none; }
-
-    /* 제작진 */
-    #credits { background: var(--black); }
-    .credits-header { margin-bottom: 90px; }
-    .credits-title { font-size: clamp(30px, 4vw, 48px); font-weight: 900; letter-spacing: -0.02em; }
-    .credits-group { margin-top: 56px; }
-    .credits-group:first-of-type { margin-top: 0; }
-    .credits-group-label {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 12px; letter-spacing: 0.1em; color: var(--gray-light);
-      text-transform: uppercase; margin-bottom: 8px;
-    }
-    .credits-rows { display: flex; flex-direction: column; }
-    .credit-row {
-      display: grid;
-      grid-template-columns: 200px 1fr;
-      gap: 48px;
-      padding: 36px 0;
-      border-top: 1px solid var(--gray);
-      align-items: baseline;
-    }
-    .credit-row:last-child { border-bottom: 1px solid var(--gray); }
-    .credit-role {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 11px; letter-spacing: 0.15em; color: var(--ember); text-transform: uppercase;
-    }
-    .credit-names { font-size: 18px; font-weight: 500; letter-spacing: -0.01em; }
-    .credit-names span { color: var(--gray-light); font-weight: 300; font-size: 14px; }
 
     /* CTA */
     #cta { background: var(--black); text-align: center; padding: 180px 48px; }
@@ -663,7 +643,6 @@
       .char-grid { grid-template-columns: 1fr; }
       .logline-header { flex-direction: column; align-items: flex-start; }
       .journey-grid { grid-template-columns: 1fr; }
-      .credit-row { grid-template-columns: 1fr; gap: 8px; }
       footer { flex-direction: column; text-align: center; }
       .footer-info { text-align: center; }
       .scroll-hint { display: none; }
@@ -682,8 +661,7 @@
       <a href="#characters" class="nav-cta">인물</a>
       <a href="#episode" class="nav-cta">파일럿</a>
       <a href="#episode1" class="nav-cta">1화 보기</a>
-      <a href="#brand" class="nav-cta">원작 이야기</a>
-      <a href="#credits" class="nav-cta filled">제작진</a>
+      <a href="#brand" class="nav-cta filled">원작 이야기</a>
     </div>
   </nav>
 
@@ -831,6 +809,10 @@
     <div class="episode-foot">
       <a href="#brand" class="btn-ghost">이 이야기가 태어난 곳 →</a>
     </div>
+    <div class="episode-credit">
+      원작 <strong>쿡캠 (주식회사 바르고)</strong> — 대표 김선아<br>
+      제작 <strong>창원문성대학교 웹툰그래픽과</strong> — 웹툰 제작팀 RISE
+    </div>
   </section>
 
   <div class="divider"></div>
@@ -942,6 +924,10 @@
     <div class="episode-foot">
       <a href="#brand" class="btn-ghost">이 이야기가 태어난 곳 →</a>
     </div>
+    <div class="episode-credit">
+      원작 <strong>쿡캠 (주식회사 바르고)</strong> — 대표 김선아<br>
+      제작 <strong>쿡캠 (주식회사 바르고)</strong> — 김영철
+    </div>
   </section>
 
   <div class="divider"></div>
@@ -999,43 +985,6 @@
       <div class="journey-item reveal reveal-delay-3">
         <div class="journey-step">04</div>
         <div class="journey-label">힐링과 깨달음</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 제작진 -->
-  <section id="credits">
-    <div class="credits-header">
-      <div class="section-number">02 — 제작진</div>
-      <h2 class="credits-title reveal">제작진</h2>
-    </div>
-
-    <div class="credits-group">
-      <div class="credits-rows">
-        <div class="credit-row reveal">
-          <div class="credit-role">원작</div>
-          <div class="credit-names">쿡캠 (주식회사 바르고) <span>— 대표 김선아</span></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="credits-group">
-      <div class="credits-group-label">파일럿 「불꽃 속의 여유」 · 2026 경남 CKL 콘텐츠 창작캠프</div>
-      <div class="credits-rows">
-        <div class="credit-row reveal reveal-delay-1">
-          <div class="credit-role">제작</div>
-          <div class="credit-names">창원문성대학교 웹툰그래픽과 <span>— 웹툰 제작팀 RISE (팀장 김관우 · 팀원 여민혁, 조현덕, 최지훈)</span></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="credits-group">
-      <div class="credits-group-label">1화 「고기서 고기까지」</div>
-      <div class="credits-rows">
-        <div class="credit-row reveal reveal-delay-2">
-          <div class="credit-role">제작</div>
-          <div class="credit-names">쿡캠 (주식회사 바르고) <span>— 김영철</span></div>
-        </div>
       </div>
     </div>
   </section>
