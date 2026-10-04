@@ -131,24 +131,32 @@
       .side .ep-link img { width: 88px; }
       .side-key { margin-top: 28px; font-size: 12px; color: var(--gray); }
 
+      /* 갤럭시 S 시리즈 형태: 얇은 베젤, 각진 모서리, 펀치홀 카메라, 오른쪽 측면 버튼 */
       .device {
         position: relative; flex: none;
-        width: 420px; height: min(880px, calc(100vh - 64px));
-        border-radius: 56px; padding: 12px; background: #000;
-        box-shadow: 0 0 0 2px #2a221d, 0 40px 120px rgba(0,0,0,.6), 0 0 80px rgba(255,122,41,.08);
+        width: 410px; height: min(870px, calc(100vh - 64px));
+        border-radius: 34px; padding: 8px; background: #0b0b0c;
+        box-shadow: 0 0 0 2px #3a3a3e, 0 0 0 3px #1c1c1f, 0 40px 120px rgba(0,0,0,.6), 0 0 80px rgba(255,122,41,.08);
       }
+      .device::before, .device::after {
+        content: ''; position: absolute; right: -6px; width: 4px; border-radius: 0 3px 3px 0; background: #3a3a3e;
+      }
+      .device::before { top: 150px; height: 88px; }  /* 볼륨 */
+      .device::after { top: 262px; height: 52px; }   /* 전원 */
       .notch {
-        position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 70;
-        width: 120px; height: 28px; background: #000; border-radius: 0 0 18px 18px;
+        position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 70;
+        width: 13px; height: 13px; border-radius: 50%;
+        background: radial-gradient(circle at 40% 40%, #2b2f3a 0 25%, #050506 45%);
+        box-shadow: 0 0 0 2px #000;
       }
       .screen {
         position: relative; height: 100%; overflow-y: auto; overscroll-behavior: contain;
-        border-radius: 44px; background: #050403; scrollbar-width: none;
+        border-radius: 27px; background: #050403; scrollbar-width: none;
       }
       .screen::-webkit-scrollbar { display: none; }
       .bar { position: sticky; }
       .bar-inner { height: 52px; }
-      .bar.top .bar-inner { padding-top: 34px; height: 86px; }
+      .bar.top .bar-inner { padding-top: 26px; height: 78px; }
       #openSheet { visibility: hidden; }
       .reader { padding-top: 0; }
       .ep-head { padding: 48px 20px 32px; }
