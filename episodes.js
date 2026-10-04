@@ -13,4 +13,16 @@ window.EPISODES = [
     dir: 'ep1', pages: 18, thumb: 'assets/thumbs/ep1.jpg', date: '2026.07.15',
     credit: '원작 <strong>쿡캠 (주식회사 바르고)</strong> — 김선아<br>제작 <strong>쿡캠 (주식회사 바르고)</strong> — 김영철'
   },
+  {
+    id: '2', label: '2화', series: '인생은 고기서 고기까지', title: '성공한 사람도 몰래 운다',
+    desc: '투자 100억 스타트업 대표 강민준, 텐트도 못 치는 그가 이고기의 불 앞에서 처음으로 숫자 뒤의 얼굴을 꺼낸다.',
+    dir: 'ep2', pages: 18, thumb: 'assets/thumbs/ep2.jpg', date: '2026.10.05',
+    credit: '원작 <strong>쿡캠 (주식회사 바르고)</strong> — 김선아<br>제작 <strong>쿡캠 (주식회사 바르고)</strong> — 김영철'
+  },
+  {
+    id: '3', label: '3화', series: '인생은 고기서 고기까지', title: '빛나지 않아도 괜찮을까',
+    desc: '가사 한 줄을 못 쓰던 싱어송라이터 박해원, 고기 냄새를 따라온 밤 불 앞에서 처음으로 소리 내어 노래한다.',
+    dir: 'ep3', pages: 18, thumb: 'assets/thumbs/ep3.jpg', date: '2026.10.05',
+    credit: '원작 <strong>쿡캠 (주식회사 바르고)</strong> — 김선아<br>제작 <strong>쿡캠 (주식회사 바르고)</strong> — 김영철'
+  },
 ];
