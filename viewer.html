@@ -15,7 +15,7 @@
     a { color: inherit; text-decoration: none; }
     button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
 
-    /* 상단 바 — 내려 읽을 땐 숨고, 올리거나 화면을 탭하면 나타남 */
+    /* 상단·하단 바 — 내려 읽을 땐 숨고, 올리거나 본문을 탭하면 나타남 */
     .bar {
       position: fixed; left: 0; right: 0; z-index: 50;
       background: rgba(18,13,10,0.96); backdrop-filter: blur(12px);
@@ -48,7 +48,7 @@
     .nav-btn[disabled] { opacity: .3; cursor: default; }
     .nav-btn.list { flex: none; width: 88px; }
 
-    /* 회차 선택 시트 */
+    /* 회차 선택 시트 (모바일) */
     .sheet-dim { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 60; display: none; }
     .sheet {
       position: fixed; left: 50%; bottom: 0; transform: translate(-50%, 100%);
@@ -59,12 +59,12 @@
     .sheet.open { transform: translate(-50%, 0); }
     .sheet-dim.open { display: block; }
     .sheet h3 { font-size: 14px; color: var(--gray-light); font-weight: 500; padding: 14px 20px 8px; }
-    .sheet a { display: flex; gap: 14px; align-items: center; padding: 10px 20px; }
-    .sheet a:hover { background: rgba(255,122,41,.06); }
-    .sheet a.current { background: rgba(255,122,41,.1); }
-    .sheet img { width: 96px; aspect-ratio: 16/9; object-fit: cover; border-radius: 6px; background: #222; flex: none; }
-    .sheet .s-label { font-size: 12px; color: var(--ember); }
-    .sheet .s-title { font-size: 14px; font-weight: 500; }
+    .ep-link { display: flex; gap: 14px; align-items: center; padding: 10px 20px; }
+    .ep-link:hover { background: rgba(255,122,41,.06); }
+    .ep-link.current { background: rgba(255,122,41,.1); }
+    .ep-link img { width: 96px; aspect-ratio: 16/9; object-fit: cover; border-radius: 6px; background: #222; flex: none; }
+    .ep-link .s-label { font-size: 12px; color: var(--ember); }
+    .ep-link .s-title { font-size: 14px; font-weight: 500; }
 
     /* 본문 */
     .reader { max-width: 800px; margin: 0 auto; padding-top: 56px; background: #fff; }
@@ -98,35 +98,99 @@
     .credit { margin-top: 40px; font-size: 12px; color: var(--gray-light); line-height: 1.9; }
     .credit strong { color: var(--white); font-weight: 500; }
 
+    .side { display: none; }
+
     @media (max-width: 480px) {
       .next-card img { width: 108px; }
       .nav-btn { font-size: 13px; }
     }
+
+    /* 넓은 화면: 왼쪽 회차 정보 + 오른쪽 휴대폰 프레임 안에서 읽기 */
+    @media (min-width: 900px) {
+      body {
+        height: 100vh; overflow: hidden;
+        background:
+          radial-gradient(ellipse at 70% 110%, rgba(255,122,41,.16), transparent 55%),
+          var(--black);
+      }
+      .stage {
+        height: 100vh; display: flex; align-items: center; justify-content: center;
+        gap: clamp(48px, 7vw, 120px); padding: 32px;
+      }
+      .side { display: block; width: 360px; max-height: calc(100vh - 64px); overflow-y: auto; }
+      .side::-webkit-scrollbar { display: none; }
+      .side-home { font-size: 13px; color: var(--gray-light); }
+      .side-home:hover { color: var(--ember); }
+      .side-series { margin-top: 40px; font-family: 'Space Grotesk', sans-serif; font-size: 12px; letter-spacing: .2em; color: var(--ember); }
+      .side h1 { font-size: 34px; font-weight: 900; letter-spacing: -.02em; line-height: 1.25; margin: 12px 0 14px; }
+      .side h1 em { font-style: normal; color: var(--gray-light); font-size: 18px; font-weight: 500; display: block; margin-bottom: 6px; }
+      .side-desc { font-size: 14px; color: var(--gray-light); line-height: 1.9; }
+      .side-nav { display: flex; gap: 8px; margin: 28px 0 36px; }
+      .side h3 { font-size: 12px; color: var(--gray-light); font-weight: 500; letter-spacing: .1em; margin-bottom: 8px; }
+      .side .ep-link { padding: 8px 10px; border-radius: 8px; margin: 0 -10px; }
+      .side .ep-link img { width: 88px; }
+      .side-key { margin-top: 28px; font-size: 12px; color: var(--gray); }
+
+      .device {
+        position: relative; flex: none;
+        width: 420px; height: min(880px, calc(100vh - 64px));
+        border-radius: 56px; padding: 12px; background: #000;
+        box-shadow: 0 0 0 2px #2a221d, 0 40px 120px rgba(0,0,0,.6), 0 0 80px rgba(255,122,41,.08);
+      }
+      .notch {
+        position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 70;
+        width: 120px; height: 28px; background: #000; border-radius: 0 0 18px 18px;
+      }
+      .screen {
+        position: relative; height: 100%; overflow-y: auto; overscroll-behavior: contain;
+        border-radius: 44px; background: #050403; scrollbar-width: none;
+      }
+      .screen::-webkit-scrollbar { display: none; }
+      .bar { position: sticky; }
+      .bar-inner { height: 52px; }
+      .bar.top .bar-inner { padding-top: 34px; height: 86px; }
+      #openSheet { visibility: hidden; }
+      .reader { padding-top: 0; }
+      .ep-head { padding: 48px 20px 32px; }
+      .ep-head h1 { font-size: 28px; }
+      .ep-end { padding: 48px 20px 64px; }
+      .next-card { flex-direction: column; align-items: stretch; }
+      .next-card img { width: 100%; }
+    }
   </style>
 </head>
 <body>
-  <header class="bar top" id="topbar">
-    <div class="bar-inner">
-      <a class="icon-btn" href="index.html#episodes" aria-label="회차 목록으로">←</a>
-      <div class="bar-title">
-        <div class="bar-series" id="barSeries"></div>
-        <div class="bar-ep" id="barEp"></div>
+  <div class="stage">
+    <aside class="side" id="side"></aside>
+
+    <div class="device">
+      <div class="notch"></div>
+      <div class="screen" id="screen">
+        <header class="bar top" id="topbar">
+          <div class="bar-inner">
+            <a class="icon-btn" href="index.html#episodes" aria-label="회차 목록으로">←</a>
+            <div class="bar-title">
+              <div class="bar-series" id="barSeries"></div>
+              <div class="bar-ep" id="barEp"></div>
+            </div>
+            <button class="icon-btn" id="openSheet" aria-label="회차 선택">☰</button>
+          </div>
+        </header>
+
+        <section class="ep-head" id="epHead"></section>
+        <main class="reader" id="reader"></main>
+        <section class="ep-end" id="epEnd"></section>
+
+        <footer class="bar bottom" id="bottombar">
+          <div class="bar-inner">
+            <button class="nav-btn" id="prevBtn">‹ 이전화</button>
+            <a class="nav-btn list" href="index.html#episodes">목록</a>
+            <button class="nav-btn" id="nextBtn">다음화 ›</button>
+          </div>
+        </footer>
       </div>
-      <button class="icon-btn" id="openSheet" aria-label="회차 선택">☰</button>
     </div>
-  </header>
-
-  <section class="ep-head" id="epHead"></section>
-  <main class="reader" id="reader"></main>
-  <section class="ep-end" id="epEnd"></section>
-
-  <footer class="bar bottom" id="bottombar">
-    <div class="bar-inner">
-      <button class="nav-btn" id="prevBtn">‹ 이전화</button>
-      <a class="nav-btn list" href="index.html#episodes">목록</a>
-      <button class="nav-btn" id="nextBtn">다음화 ›</button>
-    </div>
-  </footer>
+  </div>
 
   <div class="sheet-dim" id="dim"></div>
   <nav class="sheet" id="sheet"><h3>회차 선택</h3><div id="sheetList"></div></nav>
@@ -141,6 +205,8 @@
     const pad = n => String(n).padStart(3, '0');
     const src = (e, n) => `assets/comic/${e.dir ? e.dir + '/' : ''}${pad(n)}.jpg`;
     const go = e => { location.href = `viewer.html?ep=${e.id}`; };
+    const desk = matchMedia('(min-width: 900px)');
+    desk.addEventListener('change', () => location.reload());
 
     document.title = `${ep.label} ${ep.title} — ${ep.series}`;
     document.getElementById('barSeries').textContent = ep.series;
@@ -170,6 +236,24 @@
       <a class="back-home" href="index.html#episodes">전체 회차 목록 보기</a>
       <div class="credit">${ep.credit || ''}</div>`;
 
+    const epLinks = EPS.map(e => `
+      <a href="viewer.html?ep=${e.id}" class="ep-link ${e === ep ? 'current' : ''}">
+        <img src="${e.thumb}" alt=""><div><div class="s-label">${e.label}</div><div class="s-title">${e.title}</div></div>
+      </a>`).join('');
+
+    // 넓은 화면 왼쪽 정보 패널
+    document.getElementById('side').innerHTML = `
+      <a class="side-home" href="index.html#episodes">← 회차 목록</a>
+      <div class="side-series">${ep.series}</div>
+      <h1><em>${ep.label}</em>${ep.title}</h1>
+      <p class="side-desc">${ep.desc}</p>
+      <div class="side-nav">
+        <button class="nav-btn" ${prev ? '' : 'disabled'} onclick="${prev ? `location.href='viewer.html?ep=${prev.id}'` : ''}">‹ 이전화</button>
+        <button class="nav-btn" ${next ? '' : 'disabled'} onclick="${next ? `location.href='viewer.html?ep=${next.id}'` : ''}">다음화 ›</button>
+      </div>
+      <h3>전체 회차</h3>${epLinks}
+      <p class="side-key">← → 키로 이전화·다음화</p>`;
+
     const prevBtn = document.getElementById('prevBtn'), nextBtn = document.getElementById('nextBtn');
     prevBtn.disabled = !prev; nextBtn.disabled = !next;
     prevBtn.onclick = () => prev && go(prev);
@@ -179,26 +263,35 @@
       if (e.key === 'ArrowRight' && next) go(next);
     });
 
-    // 회차 선택 시트
+    // 회차 선택 시트 (모바일)
     const sheet = document.getElementById('sheet'), dim = document.getElementById('dim');
-    document.getElementById('sheetList').innerHTML = EPS.map(e => `
-      <a href="viewer.html?ep=${e.id}" class="${e === ep ? 'current' : ''}">
-        <img src="${e.thumb}" alt=""><div><div class="s-label">${e.label}</div><div class="s-title">${e.title}</div></div>
-      </a>`).join('');
+    document.getElementById('sheetList').innerHTML = epLinks;
     const toggleSheet = open => { sheet.classList.toggle('open', open); dim.classList.toggle('open', open); };
     document.getElementById('openSheet').onclick = () => toggleSheet(true);
     dim.onclick = () => toggleSheet(false);
 
-    // 스크롤 방향에 따라 바 숨김/표시, 본문 탭하면 토글
+    // 스크롤 주체: 넓은 화면은 휴대폰 화면 안, 모바일은 페이지 전체
+    const screen = document.getElementById('screen');
+    const getY = () => desk.matches ? screen.scrollTop : scrollY;
+    const getMax = () => desk.matches ? screen.scrollHeight - screen.clientHeight : document.body.scrollHeight - innerHeight;
+    if (desk.matches) {
+      // 휴대폰 바깥에서 휠을 굴려도 웹툰이 스크롤되도록
+      addEventListener('wheel', e => {
+        if (!screen.contains(e.target) && !document.getElementById('side').contains(e.target)) screen.scrollBy(0, e.deltaY);
+      }, { passive: true });
+    }
+
+    // 바 숨김/표시, 본문 탭하면 토글
     const bars = [document.getElementById('topbar'), document.getElementById('bottombar')];
-    let lastY = scrollY;
+    let lastY = getY();
     const setHidden = h => bars.forEach(b => b.classList.toggle('hide', h));
-    addEventListener('scroll', () => {
-      const y = scrollY, nearEnd = innerHeight + y > document.body.scrollHeight - 200;
+    const onScroll = () => {
+      const y = getY(), nearEnd = y > getMax() - 200;
       if (nearEnd || y < 80) setHidden(false);
       else if (Math.abs(y - lastY) > 8) setHidden(y > lastY);
       lastY = y;
-    }, { passive: true });
+    };
+    (desk.matches ? screen : window).addEventListener('scroll', onScroll, { passive: true });
     reader.addEventListener('click', () => setHidden(!bars[0].classList.contains('hide')));
 
     // 이어보기 기록 (브라우저별, 실패해도 무시)
