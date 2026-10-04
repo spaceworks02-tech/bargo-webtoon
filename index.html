@@ -705,7 +705,8 @@
     .chars-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 56px; flex-wrap: wrap; }
     .chars-head .characters-title { margin-bottom: 0; }
     .char-tabs { display: flex; border: 1px solid var(--gray); border-radius: 999px; overflow: hidden; }
-    .char-grid[data-panel="main"] { grid-template-columns: repeat(3, 1fr); }
+    .char-grid[hidden] { display: none; }
+    .char-grid[data-panel="main"] { grid-template-columns: repeat(var(--cols, 3), 1fr); }
     .char-photo-wrap.sheet-photo { aspect-ratio: 16 / 9; background: #d8d8d8; }
     .char-photo-wrap.sheet-photo img { object-fit: contain; }
     @media (max-width: 900px) {
@@ -827,8 +828,8 @@
         <button role="tab" data-tab="pilot">파일럿</button>
       </div>
     </div>
-    <div class="char-grid" data-panel="main">
-      <div class="char-card reveal">
+    <div class="char-grid" data-panel="main" style="--cols:4">
+      <div class="char-card">
         <div class="char-photo-wrap sheet-photo"><img src="assets/characters/ep1/이고기_character_sheet.jpg" alt="이고기"></div>
         <div class="char-body">
           <div class="char-role">Lead</div>
@@ -836,7 +837,7 @@
           <p class="char-desc">번아웃으로 회사를 떠나 무작정 캠핑을 떠난다. 고기 굽는 걸 죽도록 싫어하지만 제일 잘 굽는다. 지금은 "잠깐 쉬는 거"라고 우기는 중.</p>
         </div>
       </div>
-      <div class="char-card reveal reveal-delay-1">
+      <div class="char-card">
         <div class="char-photo-wrap sheet-photo"><img src="assets/characters/ep1/엄마_character_sheet.jpg" alt="엄마"></div>
         <div class="char-body">
           <div class="char-role">Support</div>
@@ -844,7 +845,7 @@
           <p class="char-desc">이혼 후 혼자 고깃집을 운영하며 이고기를 키워냈다. 온화하지만 단단한 성격 — 할 말은 다 '고기'로 표현한다.</p>
         </div>
       </div>
-      <div class="char-card reveal reveal-delay-2">
+      <div class="char-card">
         <div class="char-photo-wrap sheet-photo"><img src="assets/characters/ep1/이순살_character_sheet.jpg" alt="이순살"></div>
         <div class="char-body">
           <div class="char-role">Support</div>
@@ -852,7 +853,7 @@
           <p class="char-desc">결혼 1년 차, 인생 최고점을 달리는 이고기의 동생. 언니에게 무심코 던진 한마디가 이 모든 이야기의 발단이 된다.</p>
         </div>
       </div>
-      <div class="char-card reveal reveal-delay-3">
+      <div class="char-card">
         <div class="char-photo-wrap sheet-photo"><img src="assets/characters/ep1/제부_character_sheet.jpg" alt="제부"></div>
         <div class="char-body">
           <div class="char-role">Support</div>
@@ -862,7 +863,7 @@
       </div>
     </div>
     <div class="char-grid" data-panel="pilot" hidden>
-      <div class="char-card reveal">
+      <div class="char-card">
         <div class="char-photo-wrap"><img src="assets/characters/yujin.jpg" alt="유진"></div>
         <div class="char-body">
           <div class="char-role">Lead</div>
@@ -870,7 +871,7 @@
           <p class="char-desc">밝고 다정하지만 요즘 부쩍 지쳐 있다. 도현의 캠핑 제안에 얼떨결에 따라나선다.</p>
         </div>
       </div>
-      <div class="char-card reveal reveal-delay-1">
+      <div class="char-card">
         <div class="char-photo-wrap"><img src="assets/characters/dohyeon.jpg" alt="도현"></div>
         <div class="char-body">
           <div class="char-role">Lead</div>
@@ -878,7 +879,7 @@
           <p class="char-desc">차분하고 든든한 성격. 지쳐 보이는 유진이 걱정되어 캠핑을 제안한다.</p>
         </div>
       </div>
-      <div class="char-card reveal reveal-delay-2">
+      <div class="char-card">
         <div class="char-photo-wrap"><img src="assets/characters/sora.jpg" alt="소라"></div>
         <div class="char-body">
           <div class="char-role">Support</div>
@@ -886,7 +887,7 @@
           <p class="char-desc">도현의 동생. 캠핑장에서 만난 유진이 언니처럼 느껴져 먼저 말을 건넨다.</p>
         </div>
       </div>
-      <div class="char-card reveal reveal-delay-3">
+      <div class="char-card">
         <div class="char-photo-wrap"><img src="assets/characters/jungi.jpg" alt="기준"></div>
         <div class="char-body">
           <div class="char-role">Support</div>
