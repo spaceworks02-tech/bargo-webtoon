@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>인생은 고기서 고기까지 — 웹툰 보기</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Space+Grotesk:wght@400;700&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #120D0A; --panel: #1A1310; --ember: #FF7A29;
+      --white: #F5EFE6; --gray: #4A4038; --gray-light: #9C9086;
+    }
+    body { background: #050403; color: var(--white); font-family: 'Noto Sans KR', sans-serif; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+
+    /* 상단 바 — 내려 읽을 땐 숨고, 올리거나 화면을 탭하면 나타남 */
+    .bar {
+      position: fixed; left: 0; right: 0; z-index: 50;
+      background: rgba(18,13,10,0.96); backdrop-filter: blur(12px);
+      transition: transform .25s ease;
+    }
+    .bar.top { top: 0; border-bottom: 1px solid var(--gray); }
+    .bar.bottom { bottom: 0; border-top: 1px solid var(--gray); }
+    .bar.top.hide { transform: translateY(-100%); }
+    .bar.bottom.hide { transform: translateY(100%); }
+    .bar-inner {
+      max-width: 800px; margin: 0 auto; height: 56px; padding: 0 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .icon-btn {
+      width: 40px; height: 40px; display: grid; place-items: center;
+      border-radius: 8px; font-size: 20px; color: var(--gray-light); flex: none;
+    }
+    .icon-btn:hover { color: var(--ember); }
+    .bar-title { flex: 1; min-width: 0; text-align: center; }
+    .bar-series { font-size: 11px; color: var(--gray-light); letter-spacing: .04em; }
+    .bar-ep { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bar-ep em { font-style: normal; color: var(--ember); margin-right: 6px; }
+
+    .nav-btn {
+      flex: 1; height: 40px; border-radius: 8px; font-size: 14px; font-weight: 500;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      border: 1px solid var(--gray);
+    }
+    .nav-btn:hover:not([disabled]) { border-color: var(--ember); color: var(--ember); }
+    .nav-btn[disabled] { opacity: .3; cursor: default; }
+    .nav-btn.list { flex: none; width: 88px; }
+
+    /* 회차 선택 시트 */
+    .sheet-dim { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 60; display: none; }
+    .sheet {
+      position: fixed; left: 50%; bottom: 0; transform: translate(-50%, 100%);
+      width: 100%; max-width: 560px; max-height: 70vh; overflow-y: auto; z-index: 61;
+      background: var(--panel); border-radius: 16px 16px 0 0; transition: transform .25s ease;
+      padding: 8px 0 24px;
+    }
+    .sheet.open { transform: translate(-50%, 0); }
+    .sheet-dim.open { display: block; }
+    .sheet h3 { font-size: 14px; color: var(--gray-light); font-weight: 500; padding: 14px 20px 8px; }
+    .sheet a { display: flex; gap: 14px; align-items: center; padding: 10px 20px; }
+    .sheet a:hover { background: rgba(255,122,41,.06); }
+    .sheet a.current { background: rgba(255,122,41,.1); }
+    .sheet img { width: 96px; aspect-ratio: 16/9; object-fit: cover; border-radius: 6px; background: #222; flex: none; }
+    .sheet .s-label { font-size: 12px; color: var(--ember); }
+    .sheet .s-title { font-size: 14px; font-weight: 500; }
+
+    /* 본문 */
+    .reader { max-width: 800px; margin: 0 auto; padding-top: 56px; background: #fff; }
+    .reader img { display: block; width: 100%; height: auto; }
+    .ep-head {
+      max-width: 800px; margin: 0 auto; padding: 96px 24px 40px; text-align: center;
+      background: radial-gradient(ellipse at 50% 120%, rgba(255,122,41,.18), transparent 60%), var(--black);
+    }
+    .ep-head .eyebrow { font-family: 'Space Grotesk', sans-serif; font-size: 12px; letter-spacing: .2em; color: var(--ember); text-transform: uppercase; }
+    .ep-head h1 { font-size: clamp(26px, 6vw, 40px); font-weight: 900; letter-spacing: -.02em; margin: 12px 0 10px; }
+    .ep-head p { font-size: 14px; color: var(--gray-light); line-height: 1.8; }
+
+    .ep-end {
+      max-width: 800px; margin: 0 auto; padding: 64px 24px 140px; text-align: center;
+      background: var(--black);
+    }
+    .ep-end .done { font-size: 13px; letter-spacing: .3em; color: var(--gray-light); }
+    .ep-end h2 { font-size: 22px; font-weight: 700; margin: 10px 0 32px; }
+    .next-card {
+      display: flex; gap: 16px; align-items: center; text-align: left;
+      max-width: 520px; margin: 0 auto 20px; padding: 14px; border-radius: 12px;
+      border: 1px solid var(--gray); background: var(--panel);
+    }
+    .next-card:hover { border-color: var(--ember); }
+    .next-card img { width: 140px; aspect-ratio: 16/9; object-fit: cover; border-radius: 8px; flex: none; background: #222; }
+    .next-card .k { font-size: 12px; color: var(--ember); margin-bottom: 4px; }
+    .next-card .t { font-size: 16px; font-weight: 700; }
+    .next-card .d { font-size: 12px; color: var(--gray-light); margin-top: 4px; line-height: 1.6; }
+    .soon { font-size: 14px; color: var(--gray-light); margin-bottom: 20px; }
+    .back-home { display: inline-block; margin-top: 8px; font-size: 13px; color: var(--gray-light); border-bottom: 1px solid var(--gray); padding-bottom: 2px; }
+    .credit { margin-top: 40px; font-size: 12px; color: var(--gray-light); line-height: 1.9; }
+    .credit strong { color: var(--white); font-weight: 500; }
+
+    @media (max-width: 480px) {
+      .next-card img { width: 108px; }
+      .nav-btn { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="bar top" id="topbar">
+    <div class="bar-inner">
+      <a class="icon-btn" href="index.html#episodes" aria-label="회차 목록으로">←</a>
+      <div class="bar-title">
+        <div class="bar-series" id="barSeries"></div>
+        <div class="bar-ep" id="barEp"></div>
+      </div>
+      <button class="icon-btn" id="openSheet" aria-label="회차 선택">☰</button>
+    </div>
+  </header>
+
+  <section class="ep-head" id="epHead"></section>
+  <main class="reader" id="reader"></main>
+  <section class="ep-end" id="epEnd"></section>
+
+  <footer class="bar bottom" id="bottombar">
+    <div class="bar-inner">
+      <button class="nav-btn" id="prevBtn">‹ 이전화</button>
+      <a class="nav-btn list" href="index.html#episodes">목록</a>
+      <button class="nav-btn" id="nextBtn">다음화 ›</button>
+    </div>
+  </footer>
+
+  <div class="sheet-dim" id="dim"></div>
+  <nav class="sheet" id="sheet"><h3>회차 선택</h3><div id="sheetList"></div></nav>
+
+  <script src="episodes.js"></script>
+  <script>
+    const EPS = window.EPISODES;
+    const params = new URLSearchParams(location.search);
+    let idx = EPS.findIndex(e => e.id === params.get('ep'));
+    if (idx < 0) idx = EPS.findIndex(e => e.id === '1');
+    const ep = EPS[idx], prev = EPS[idx - 1], next = EPS[idx + 1];
+    const pad = n => String(n).padStart(3, '0');
+    const src = (e, n) => `assets/comic/${e.dir ? e.dir + '/' : ''}${pad(n)}.jpg`;
+    const go = e => { location.href = `viewer.html?ep=${e.id}`; };
+
+    document.title = `${ep.label} ${ep.title} — ${ep.series}`;
+    document.getElementById('barSeries').textContent = ep.series;
+    document.getElementById('barEp').innerHTML = `<em>${ep.label}</em>${ep.title}`;
+    document.getElementById('epHead').innerHTML =
+      `<div class="eyebrow">${ep.id === 'pilot' ? 'Pilot' : 'Episode ' + ep.id}</div>
+       <h1>${ep.title}</h1><p>${ep.series} · ${ep.label}<br>${ep.desc}</p>`;
+
+    const reader = document.getElementById('reader');
+    for (let n = 1; n <= ep.pages; n++) {
+      const img = new Image();
+      img.src = src(ep, n);
+      img.alt = `${ep.series} ${ep.label} - ${n}페이지`;
+      if (n > 2) img.loading = 'lazy';
+      reader.appendChild(img);
+    }
+
+    const card = (e, kind) => `
+      <a class="next-card" href="viewer.html?ep=${e.id}">
+        <img src="${e.thumb}" alt="">
+        <div><div class="k">${kind} · ${e.label}</div><div class="t">${e.title}</div><div class="d">${e.desc}</div></div>
+      </a>`;
+    document.getElementById('epEnd').innerHTML = `
+      <div class="done">E N D</div>
+      <h2>${ep.label} 「${ep.title}」 끝</h2>
+      ${next ? card(next, '다음화') : '<p class="soon">다음 이야기가 곧 이어집니다.</p>'}
+      <a class="back-home" href="index.html#episodes">전체 회차 목록 보기</a>
+      <div class="credit">${ep.credit || ''}</div>`;
+
+    const prevBtn = document.getElementById('prevBtn'), nextBtn = document.getElementById('nextBtn');
+    prevBtn.disabled = !prev; nextBtn.disabled = !next;
+    prevBtn.onclick = () => prev && go(prev);
+    nextBtn.onclick = () => next && go(next);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft' && prev) go(prev);
+      if (e.key === 'ArrowRight' && next) go(next);
+    });
+
+    // 회차 선택 시트
+    const sheet = document.getElementById('sheet'), dim = document.getElementById('dim');
+    document.getElementById('sheetList').innerHTML = EPS.map(e => `
+      <a href="viewer.html?ep=${e.id}" class="${e === ep ? 'current' : ''}">
+        <img src="${e.thumb}" alt=""><div><div class="s-label">${e.label}</div><div class="s-title">${e.title}</div></div>
+      </a>`).join('');
+    const toggleSheet = open => { sheet.classList.toggle('open', open); dim.classList.toggle('open', open); };
+    document.getElementById('openSheet').onclick = () => toggleSheet(true);
+    dim.onclick = () => toggleSheet(false);
+
+    // 스크롤 방향에 따라 바 숨김/표시, 본문 탭하면 토글
+    const bars = [document.getElementById('topbar'), document.getElementById('bottombar')];
+    let lastY = scrollY;
+    const setHidden = h => bars.forEach(b => b.classList.toggle('hide', h));
+    addEventListener('scroll', () => {
+      const y = scrollY, nearEnd = innerHeight + y > document.body.scrollHeight - 200;
+      if (nearEnd || y < 80) setHidden(false);
+      else if (Math.abs(y - lastY) > 8) setHidden(y > lastY);
+      lastY = y;
+    }, { passive: true });
+    reader.addEventListener('click', () => setHidden(!bars[0].classList.contains('hide')));
+
+    // 이어보기 기록 (브라우저별, 실패해도 무시)
+    try { localStorage.setItem('cookcamWebtoonLast', ep.id); } catch (e) {}
+  </script>
+</body>
+</html>
