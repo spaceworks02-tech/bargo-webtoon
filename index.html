@@ -706,6 +706,8 @@
     .chars-head .characters-title { margin-bottom: 0; }
     .char-tabs { display: flex; border: 1px solid var(--gray); border-radius: 999px; overflow: hidden; }
     .char-grid[hidden] { display: none; }
+    .char-grid[data-panel="main"] { background: transparent; gap: 1px; }
+    .char-grid[data-panel="main"] .char-card { outline: 1px solid var(--gray); }
     .char-grid[data-panel="main"] { grid-template-columns: repeat(var(--cols, 3), 1fr); }
     .char-photo-wrap.sheet-photo { aspect-ratio: 16 / 9; background: #d8d8d8; }
     .char-photo-wrap.sheet-photo img { object-fit: contain; }
@@ -828,7 +830,7 @@
         <button role="tab" data-tab="pilot">파일럿</button>
       </div>
     </div>
-    <div class="char-grid" data-panel="main">
+    <div class="char-grid" data-panel="main" style="--cols:4">
       <div class="char-card">
         <div class="char-photo-wrap sheet-photo"><img src="assets/characters/ep1/이고기_character_sheet.jpg" alt="이고기"></div>
         <div class="char-body">
@@ -867,6 +869,14 @@
           <div class="char-role">2화 Guest</div>
           <div class="char-name">강민준<span>38 · 스타트업 대표</span></div>
           <p class="char-desc">직원 30명, 투자 100억. 텐트도 못 치고 숯불도 못 피우는 CEO. 숫자 뒤에 숨어 있던 얼굴을 불 앞에서 처음 꺼낸다.</p>
+        </div>
+      </div>
+      <div class="char-card">
+        <div class="char-photo-wrap sheet-photo"><img src="assets/characters/ep2/고강호_character_sheet.jpg" alt="고강호"></div>
+        <div class="char-body">
+          <div class="char-role">2화 Guest</div>
+          <div class="char-name">고강호<span>40대 초 · 나흘째 머무는 캠퍼 · 배우 명현만</span></div>
+          <p class="char-desc">격투기 선수 같은 체격에 날카로운 눈매, 그런데 속은 누구보다 무르고 다정하다. 텐트와 씨름하는 민준에게 먼저 손을 내밀고, 탄 고기도 살려낸다.</p>
         </div>
       </div>
       <div class="char-card">
